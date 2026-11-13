@@ -581,8 +581,8 @@
 
     <!-- PAGE 2: CATCH ME GAME -->
     <div class="page" id="page2">
-        <h2>Giúp Em Bắt Anh Nhé! 🧺</h2>
-        <p>Hãy bắt 15 chiếc đầu của em vào giỏ nhé!</p>
+        <h2>Anh Bắt Giúp Em Nhé! 🧺</h2>
+        <p>Hãy bắt 15 ảnh của em vào giỏ nhé!</p>
         <p style="font-weight: bold; color: var(--gold-accent);">Điểm: <span id="score">0</span> / 15</p>
         
         <canvas id="gameCanvas" width="300" height="230"></canvas>
@@ -904,7 +904,7 @@
                     document.getElementById('score').innerText = score;
                     if(score >= 15) {
                         setTimeout(() => {
-                            alert('Yeahh! Anh đã bắt được 15 chiếc đầu của em rồi! 💕');
+                            alert('Yeahh! Anh đã bắt được 15 ảnh của em rồi! 💕');
                             goToPage('page3');
                         }, 200);
                         return;
