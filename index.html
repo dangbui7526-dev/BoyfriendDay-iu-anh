@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Ngày Bạn Trai Nhé Anh Yêu ❤️</title>
+
+    <!-- ========================================================= -->
+    <!-- KHỐI CẤU HÌNH: CHỈNH SỬA TẠI ĐÂY (mật khẩu, câu hỏi, file) -->
+    <!-- ========================================================= -->
+    <script>
+        const CONFIG = {
+            // --- MẬT KHẨU MỞ KHÓA (4 chữ số) ---
+            PIN: "2107",
+
+            // --- CÂU HỎI "AI LÀ NGƯỜI QUAN TRỌNG" (trang 6) ---
+            QUIZ_QUESTION: "Người em yêu nhất tên là gì?",
+            QUIZ_ANSWER: "afiza maulana",   // viết thường hết, không phân biệt hoa/thường khi nhập
+            QUIZ_NAME: "Afiza",             // tên hiện ra khi trả lời đúng
+
+            // --- FILE ÂM THANH (mp3) ---
+            FILE_SONG: "lagu_romantis.mp3", // bài hát ở trang 3
+            FILE_VOICE: "suara_aku.mp3",    // tin nhắn thoại ở trang 6
+
+            // --- FILE ẢNH ---
+            FILE_SAD_FACE: "foto_cemberut.png", // ảnh mặt giận khi nhập sai PIN
+            FILE_HEAD: "foto_kepala.png",       // ảnh đầu rơi trong mini game
+            FILE_PHOTO1: "foto1.jpg",           // ảnh polaroid số 1
+            FILE_PHOTO2: "foto2.jpg",           // ảnh polaroid số 2
+            FILE_PHOTO3: "foto3.jpg"            // ảnh polaroid số 3
+        };
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maroon-dark: #4a000d;
+            --maroon-main: #800020;
+            --maroon-light: #b33951;
+            --gold-accent: #d4af37;
+            --cream-bg: #fffbf7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--maroon-dark);
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Background & Falling Flowers */
+        .floral-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+            background-image: radial-gradient(circle, var(--gold-accent) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .flower {
+            position: fixed;
+            font-size: 24px;
+            animation: fall 10s linear infinite; /* Diperlambat */
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Container Pages */
+        .page {
+            display: none;
+            width: 90%;
+            max-width: 450px;
+            background: linear-gradient(145deg, #5c0011, #3a000a);
+            border: 2px solid var(--gold-accent);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 0.8s ease; /* Diperlambat transition fadeIn */
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--gold-accent);
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        /* Lock Screen */
+        .pin-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .pin-dot {
+            width: 15px; height: 15px;
+            border-radius: 50%;
+            border: 2px solid var(--gold-accent);
+            background: transparent;
+        }
+
+        .pin-dot.filled {
+            background: var(--gold-accent);
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .key {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--gold-accent);
+            color: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .key:active {
+            background: var(--gold-accent);
+            color: var(--maroon-dark);
+        }
+
+        /* Modal Wrong PIN */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .modal-content {
+            background: var(--maroon-main);
+            border: 2px solid var(--gold-accent);
+            padding: 20px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .modal-content img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--gold-accent);
+        }
+
+        .btn {
+            background: var(--gold-accent);
+            color: var(--maroon-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Canvas Game (Kecepatan Asli) */
+        #gameCanvas {
+            background: rgba(0,0,0,0.3);
+            border: 2px dashed var(--gold-accent);
+            border-radius: 12px;
+            touch-action: none;
+        }
+
+        /* JOURNEY MAP (Animasi Diperlambat Jadi 6 Detik) */
+        .map-container {
+            position: relative;
+            height: 120px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 1px solid var(--gold-accent);
+        }
+
+        .location {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .location.bekasi { left: 10px; color: #ffb7c5; }
+        .location.depok { right: 10px; color: #ffb7c5; }
+
+        .heart-runner {
+            position: absolute;
+            top: 40%;
+            left: 10px;
+            font-size: 1.5rem;
+            display: inline-block;
+            transform: scaleX(-1);
+            transition: left 6s cubic-bezier(0.4, 0, 0.2, 1); /* Diperlambat & halus */
+        }
+
+        .route-line {
+            position: absolute;
+            top: 55%;
+            left: 20px; right: 20px;
+            height: 2px;
+            background: repeating-linear-gradient(90deg, var(--gold-accent), var(--gold-accent) 5px, transparent 5px, transparent 10px);
+        }
+
+        /* ANIMATED MUSIC PLAYER (PAGE 3 - Putaran Diperlambat) */
+        .vinyl-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 15px auto;
+        }
+
+        .vinyl-disc {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #222 30%, #111 31%, #333 40%, #111 60%, #222 70%, #111 100%);
+            border: 3px solid var(--gold-accent);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: spin 7s linear infinite; /* Putaran diperlambat */
+            animation-play-state: paused;
+        }
+
+        .vinyl-disc.playing {
+            animation-play-state: running;
+        }
+
+        .vinyl-center {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--maroon-light);
+            border: 2px solid var(--gold-accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .equalizer {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 5px;
+            height: 30px;
+            margin: 15px 0;
+        }
+
+        .eq-bar {
+            width: 6px;
+            height: 5px;
+            background: var(--gold-accent);
+            border-radius: 3px;
+            transition: height 0.3s ease;
+        }
+
+        .equalizer.playing .eq-bar {
+            animation: eqBounce 1.2s ease-in-out infinite alternate; /* Fluktuasi diperlambat */
+        }
+
+        .equalizer.playing .eq-bar:nth-child(1) { animation-delay: 0.15s; }
+        .equalizer.playing .eq-bar:nth-child(2) { animation-delay: 0.4s; }
+        .equalizer.playing .eq-bar:nth-child(3) { animation-delay: 0.7s; }
+        .equalizer.playing .eq-bar:nth-child(4) { animation-delay: 0.3s; }
+        .equalizer.playing .eq-bar:nth-child(5) { animation-delay: 0.55s; }
+
+        @keyframes eqBounce {
+            0% { height: 5px; }
+            100% { height: 28px; }
+        }
+
+        /* ANIMATED VOICE PLAYER (PAGE 6) */
+        .voice-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid var(--gold-accent);
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            animation: popIn 0.8s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .voice-waveform {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 35px;
+            margin: 10px 0;
+        }
+
+        .wave-bar {
+            width: 4px;
+            height: 8px;
+            background: #ffb7c5;
+            border-radius: 2px;
+        }
+
+        .voice-card.playing .wave-bar {
+            animation: waveAnim 0.9s ease-in-out infinite alternate; /* Diperlambat */
+        }
+
+        .voice-card.playing .wave-bar:nth-child(odd) { animation-delay: 0.2s; }
+        .voice-card.playing .wave-bar:nth-child(even) { animation-delay: 0.45s; }
+
+        @keyframes waveAnim {
+            0% { height: 6px; }
+            100% { height: 32px; background: var(--gold-accent); }
+        }
+
+        /* TIMER BOX & QUESTION */
+        .timer-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--gold-accent);
+        }
+
+        .time-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-num {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--gold-accent);
+        }
+
+        .time-label {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        .question-box {
+            position: relative;
+            min-height: 120px;
+            margin-top: 15px;
+        }
+
+        .btn-no {
+            position: absolute;
+            background: #ff4d4d;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* STICKY NOTE & ENVELOPE */
+        .sticky-note {
+            background: #fff7b1;
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 3px 5px 12px rgba(0,0,0,0.3);
+            font-family: 'Caveat', cursive;
+            font-size: 1.15rem;
+            line-height: 1.4;
+            transform: rotate(-2deg);
+            margin: 15px auto;
+            text-align: left;
+            position: relative;
+            border-left: 4px solid #f2e379;
+        }
+
+        .sticky-note::before {
+            content: '📌';
+            position: absolute;
+            top: -12px;
+            right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 200px;
+            height: 110px;
+            background: var(--maroon-light);
+            margin: 20px auto;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid var(--gold-accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .envelope-wrapper::after {
+            content: '✉️ Mở Thư';
+            font-size: 0.85rem;
+            color: var(--gold-accent);
+            font-weight: bold;
+        }
+
+        .letter-content {
+            display: none;
+            background: var(--cream-bg);
+            color: #333;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.88rem;
+            max-height: 230px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid var(--gold-accent);
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* POLAROID */
+        .polaroid-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .env-option {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--gold-accent);
+            padding: 15px 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .polaroid-card {
+            display: none;
+            background: #fff;
+            padding: 15px 15px 20px 15px;
+            border-radius: 8px;
+            color: #333;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .polaroid-frame {
+            width: 100%;
+            height: 180px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .polaroid-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .polaroid-card p {
+            color: #333;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.25rem;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floral-bg"></div>
+
+    <!-- AUDIO UTAMA FULL MP3 (tên file lấy từ CONFIG.FILE_SONG) -->
+    <audio id="bgMusic" loop></audio>
+
+    <!-- PAGE 1: SECRET LOCK -->
+    <div class="page active" id="page1">
+        <h2>Khóa Bí Mật 🌹</h2>
+        <p>Nhập mã PIN bí mật gồm 4 chữ số nhé!</p>
+
+        <div class="pin-display">
+            <div class="pin-dot" id="dot0"></div>
+            <div class="pin-dot" id="dot1"></div>
+            <div class="pin-dot" id="dot2"></div>
+            <div class="pin-dot" id="dot3"></div>
+        </div>
+
+        <div class="keypad">
+            <button class="key" onclick="playClick(); pressKey('1')">1</button>
+            <button class="key" onclick="playClick(); pressKey('2')">2</button>
+            <button class="key" onclick="playClick(); pressKey('3')">3</button>
+            <button class="key" onclick="playClick(); pressKey('4')">4</button>
+            <button class="key" onclick="playClick(); pressKey('5')">5</button>
+            <button class="key" onclick="playClick(); pressKey('6')">6</button>
+            <button class="key" onclick="playClick(); pressKey('7')">7</button>
+            <button class="key" onclick="playClick(); pressKey('8')">8</button>
+            <button class="key" onclick="playClick(); pressKey('9')">9</button>
+            <button class="key" onclick="playClick(); clearPin()">C</button>
+            <button class="key" onclick="playClick(); pressKey('0')">0</button>
+            <button class="key" onclick="playClick(); checkPin()">OK</button>
+        </div>
+    </div>
+
+    <!-- MODAL WRONG PIN -->
+    <div class="modal" id="wrongPinModal">
+        <div class="modal-content">
+            <img id="sadFaceImg" alt="Mặt giận" onerror="this.src='https://via.placeholder.com/200?text=Mat+Gian'">
+            <p>SAIIII RỒI!! Sao anh lại quên mã PIN rồi hả? 😾</p>
+            <button class="btn" onclick="playClick(); closeModal()">Thử Lại</button>
+        </div>
+    </div>
+
+    <!-- PAGE 2: CATCH ME GAME -->
+    <div class="page" id="page2">
+        <h2>Giúp Em Bắt Anh Nhé! 🧺</h2>
+        <p>Hãy bắt 15 chiếc đầu của em vào giỏ nhé!</p>
+        <p style="font-weight: bold; color: var(--gold-accent);">Điểm: <span id="score">0</span> / 15</p>
+        
+        <canvas id="gameCanvas" width="300" height="230"></canvas>
+    </div>
+
+    <!-- PAGE 3: SPECIAL MUSIC PLAYER WITH VINYL ANIMATION -->
+    <div class="page" id="page3">
+        <h2>Bài Hát Dành Riêng Cho Anh 🎵</h2>
+        <p>Hãy bật chiếc đĩa than này nhé! ✨</p>
+
+        <div class="vinyl-container">
+            <div class="vinyl-disc" id="vinylDisc">
+                <div class="vinyl-center">❤️</div>
+            </div>
+        </div>
+
+        <div class="equalizer" id="equalizer">
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+        </div>
+
+        <button class="btn" id="toggleMusicBtn" onclick="toggleSong()">▶️ Phát Bài Hát Lãng Mạn</button>
+        <br>
+        <button class="btn" style="margin-top: 15px; background: transparent; border: 1px solid var(--gold-accent); color: #fff;" onclick="playClick(); goToPage('page4')">Tiếp Tục Hành Trình 🛵💨</button>
+    </div>
+
+    <!-- PAGE 4: JOURNEY MAP -->
+    <div class="page" id="page4">
+        <h2>Hành Trình Của Chúng Ta 📍</h2>
+        <p>Khoảng cách xa thật đấy, nhưng trái tim mình vẫn luôn gần nhau hehe ❤️</p>
+        
+        <div class="map-container">
+            <div class="route-line"></div>
+            <div class="location bekasi">📍 Bekasi</div>
+            <div class="heart-runner" id="heartRunner">🛵💨</div>
+            <div class="location depok">📍 Depok</div>
+        </div>
+
+        <button class="btn" onclick="playClick(); startJourney()">Bắt Đầu Hành Trình</button>
+        <button class="btn" id="nextToTimer" style="display:none; margin-top: 10px;" onclick="playClick(); goToPage('page5')">Tiếp Tục ✨</button>
+    </div>
+
+    <!-- PAGE 5: LOVE TIMER & QUESTION -->
+    <div class="page" id="page5">
+        <h2>Ngày Bên Nhau ⏳</h2>
+        <p>Chúng ta đã bên nhau được:</p>
+        
+        <div class="timer-box">
+            <div class="time-card"><span class="time-num" id="t-days">0</span><span class="time-label">Ngày</span></div>
+            <div class="time-card"><span class="time-num" id="t-hours">0</span><span class="time-label">Giờ</span></div>
+            <div class="time-card"><span class="time-num" id="t-mins">0</span><span class="time-label">Phút</span></div>
+            <div class="time-card"><span class="time-num" id="t-secs">0</span><span class="time-label">Giây</span></div>
+        </div>
+
+        <p style="font-size:0.95rem; font-weight:600; margin-top:15px; color:var(--gold-accent);">
+            "Nếu có thể quay ngược thời gian cả nghìn lần, anh có còn chọn em không?"
+        </p>
+
+        <div class="question-box">
+            <button class="btn" onclick="playClick(); goToPage('page6')" style="position: absolute; left: 15%; top: 30px;">Có chứ! ❤️</button>
+            <button class="btn btn-no" id="btnNo" onmouseover="moveNo()" onclick="moveNo()" style="right: 15%; top: 30px;">Không 😜</button>
+        </div>
+    </div>
+
+    <!-- PAGE 6: AUDIO RIDDLE GAME WITH WAVEFORM DESIGN -->
+    <div class="page" id="page6">
+        <h2>Câu Đố Giọng Nói Bí Mật 🎙️</h2>
+        <p>Trả lời câu hỏi này để nghe giọng của em nhé!</p>
+        <!-- Nội dung câu hỏi lấy từ CONFIG.QUIZ_QUESTION -->
+        <p id="quizQuestion" style="margin-top:15px; font-weight:bold; color:var(--gold-accent); font-size: 1.05rem;"></p>
+
+        <input type="text" id="answerInput" placeholder="Nhập câu trả lời của anh..." style="padding:10px; border-radius:10px; border:1px solid var(--gold-accent); width:80%; text-align:center; margin:15px 0;">
+        <br>
+        <button class="btn" onclick="playClick(); checkAudioAnswer()">Mở Giọng Em 🔊</button>
+
+        <div id="audioPlayerBox" style="display:none;">
+            <p id="quizCorrectMsg" style="color:#25D366; font-weight:bold; margin-top: 15px;"></p>
+            
+            <div class="voice-card" id="voiceCard">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="font-size: 0.8rem; color: var(--gold-accent); font-weight: 600;">🎙️ Tin Nhắn Thoại Dành Riêng Cho Anh</span>
+                    <span style="font-size: 0.75rem; opacity: 0.7;">0:15</span>
+                </div>
+
+                <div class="voice-waveform">
+                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                </div>
+
+                <!-- Tên file lấy từ CONFIG.FILE_VOICE -->
+                <audio id="myVoice" onplay="startVoiceAnim()" onended="stopVoiceAnim()" onpause="stopVoiceAnim()"></audio>
+                <button class="btn" style="width: 100%; font-size: 0.85rem;" onclick="toggleVoiceNote()">▶️ Phát Tin Nhắn Thoại</button>
+            </div>
+
+            <button class="btn" style="margin-top:15px;" onclick="playClick(); goToPage('page7')">Đến Lá Thư 💌</button>
+        </div>
+    </div>
+
+    <!-- PAGE 7: SURAT CINTA -->
+    <div class="page" id="page7">
+        <div class="sticky-note">
+            Chào người thương của emm, hy vọng khi em gửi món quà này cho anh, anh sẽ cảm nhận được tình yêu và sự chân thành của em dành cho anh nhé. Em tự hào về anh lắm, và anh mãi mãi là người em yêu nhất, love uuu ❤️
+        </div>
+
+        <h2>Thư Tình 💌</h2>
+        <p>Chạm vào phong thư bên dưới để mở thư nhé!</p>
+
+        <div class="envelope-wrapper" id="envelope" onclick="playClick(); openLetterWithTyping()"></div>
+
+        <div class="letter-content" id="letterContent"></div>
+
+        <button class="btn" id="btnToPage8" style="display:none; margin-top: 15px;" onclick="playClick(); goToPage('page8')">Xem Thẻ Lời Nhắn 📸</button>
+    </div>
+
+    <!-- PAGE 8: POLAROID -->
+    <div class="page" id="page8">
+        <h2>Lời Nhắn Bí Mật ✉️</h2>
+        <p>Hãy mở từng phong thư bên dưới nhé!</p>
+
+        <div class="polaroid-grid">
+            <div class="env-option" onclick="playClick(); openPolaroid(1)">✉️ 1</div>
+            <div class="env-option" onclick="playClick(); openPolaroid(2)">✉️ 2</div>
+            <div class="env-option" onclick="playClick(); openPolaroid(3)">✉️ 3</div>
+        </div>
+
+        <div class="polaroid-card" id="polaroidCard">
+            <div class="polaroid-frame" id="polaroidFrame"></div>
+            <p id="polaroidCaption"></p>
+        </div>
+
+        <button class="btn" style="margin-top: 20px;" onclick="playClick(); goToPage('page9')">Lời Nhắn Cuối ✨</button>
+    </div>
+
+    <!-- PAGE 9: OUTRO -->
+    <div class="page" id="page9">
+        <h2>Chúc Mừng Ngày Bạn Trai! ❤️</h2>
+        <div style="font-size: 3.5rem; margin: 20px 0;">😝🤍</div>
+        <p style="font-size: 1.05rem; line-height:1.6; color:var(--gold-accent); font-weight:600;">
+            "Một lần nữa em muốn chúc anh Ngày Bạn Trai vui vẻ nhéee anh yêu, xin lỗi vì bây giờ em mới tặng được, hy vọng anh thích nha, mà anh phải thích đó nha, em đã cố gắng làm cái này rất nhiều hehe, love uuu thương anh nhiềuuu"
+        </p>
+    </div>
+
+    <!-- AUDIO SOUND EFFECTS -->
+    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="typingSound" src="https://assets.mixkit.co/active_storage/sfx/2544/2544-preview.mp3" preload="auto"></audio>
+
+    <script>
+        const CORRECT_PIN = CONFIG.PIN;
+        let currentPin = "";
+
+        /* GÁN FILE TỪ KHỐI CẤU HÌNH VÀO TRANG */
+        document.getElementById('bgMusic').src = CONFIG.FILE_SONG;
+        document.getElementById('myVoice').src = CONFIG.FILE_VOICE;
+        document.getElementById('sadFaceImg').src = CONFIG.FILE_SAD_FACE;
+        document.getElementById('quizQuestion').innerText = '"' + CONFIG.QUIZ_QUESTION + '"';
+        document.getElementById('quizCorrectMsg').innerText = 'Yeah, đúng rồi! Chính là ANH, ' + CONFIG.QUIZ_NAME + '! 🥰';
+
+        function playClick() {
+            const snd = document.getElementById('clickSound');
+            snd.currentTime = 0;
+            snd.play().catch(()=>{});
+        }
+
+        /* TOGGLE LAGU DENGAN ANIMASI PIRINGAN HITAM */
+        function toggleSong() {
+            const bgMusic = document.getElementById('bgMusic');
+            const disc = document.getElementById('vinylDisc');
+            const eq = document.getElementById('equalizer');
+            const btn = document.getElementById('toggleMusicBtn');
+
+            if (bgMusic.paused) {
+                bgMusic.volume = 1.0;
+                bgMusic.play();
+                disc.classList.add('playing');
+                eq.classList.add('playing');
+                btn.innerHTML = "⏸️ Tạm Dừng Bài Hát";
+            } else {
+                bgMusic.pause();
+                disc.classList.remove('playing');
+                eq.classList.remove('playing');
+                btn.innerHTML = "▶️ Phát Bài Hát Lãng Mạn";
+            }
+        }
+
+        /* VOICE NOTE DENGAN SISTEM DUCKING VOLUME (LAGU MENGECIL OTOMATIS SAAT VOICE BISA DIPUTER) */
+        function toggleVoiceNote() {
+            const vAudio = document.getElementById('myVoice');
+            const bgMusic = document.getElementById('bgMusic');
+
+            if(vAudio.paused) {
+                // Kecilkan lagu utama agar suara Voice Note kamu sangat jelas
+                if(!bgMusic.paused) {
+                    bgMusic.volume = 0.15;
+                }
+                vAudio.play();
+            } else {
+                vAudio.pause();
+            }
+        }
+
+        function startVoiceAnim() {
+            document.getElementById('voiceCard').classList.add('playing');
+        }
+
+        function stopVoiceAnim() {
+            document.getElementById('voiceCard').classList.remove('playing');
+            // Kembalikan volume lagu utama jadi kencang kembali
+            const bgMusic = document.getElementById('bgMusic');
+            if(!bgMusic.paused) {
+                bgMusic.volume = 1.0;
+            }
+        }
+
+        function createFlowers() {
+            const flowers = ['🌹', '🌸', '🌺', '✨'];
+            for(let i = 0; i < 15; i++) {
+                let flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+                flower.style.left = Math.random() * 100 + 'vw';
+                flower.style.animationDuration = (Math.random() * 4 + 7) + 's'; /* Bunga jatuh lebih pelan */
+                flower.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(flower);
+            }
+        }
+        createFlowers();
+
+        function pressKey(num) {
+            if(currentPin.length < 4) {
+                currentPin += num;
+                updateDots();
+            }
+        }
+
+        function clearPin() {
+            currentPin = "";
+            updateDots();
+        }
+
+        function updateDots() {
+            for(let i=0; i<4; i++) {
+                const dot = document.getElementById(`dot${i}`);
+                if(i < currentPin.length) dot.classList.add('filled');
+                else dot.classList.remove('filled');
+            }
+        }
+
+        function checkPin() {
+            if(currentPin === CORRECT_PIN) {
+                goToPage('page2');
+                initGame();
+            } else {
+                document.getElementById('wrongPinModal').style.display = 'flex';
+                clearPin();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('wrongPinModal').style.display = 'none';
+        }
+
+        function goToPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            if(pageId === 'page5') {
+                startTimer();
+            }
+        }
+
+        /* MINI GAME 1 (TETAP SERU & REAKSI CEPAT) */
+        let score = 0;
+        let canvas, ctx, basket, headImage;
+        let heads = [];
+
+        function initGame() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            basket = { x: canvas.width/2 - 25, y: canvas.height - 20, width: 50, height: 15 };
+            headImage = new Image();
+            headImage.src = CONFIG.FILE_HEAD;
+
+            canvas.addEventListener('touchmove', function(e) {
+                let rect = canvas.getBoundingClientRect();
+                let touchX = e.touches[0].clientX - rect.left;
+                basket.x = touchX - basket.width/2;
+            });
+
+            canvas.addEventListener('mousemove', function(e) {
+                let rect = canvas.getBoundingClientRect();
+                basket.x = e.clientX - rect.left - basket.width/2;
+            });
+
+            requestAnimationFrame(updateGame);
+        }
+
+        function updateGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#d4af37';
+            ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+
+            if(Math.random() < 0.03 && heads.length < 3) {
+                heads.push({ x: Math.random() * (canvas.width - 30), y: 0, speed: 2 + Math.random() * 2 });
+            }
+
+            for(let i = 0; i < heads.length; i++) {
+                let h = heads[i];
+                h.y += h.speed;
+                ctx.drawImage(headImage, h.x, h.y, 30, 30);
+
+                if(h.y + 30 >= basket.y && h.x + 30 >= basket.x && h.x <= basket.x + basket.width) {
+                    heads.splice(i, 1);
+                    score++;
+                    document.getElementById('score').innerText = score;
+                    if(score >= 15) {
+                        setTimeout(() => {
+                            alert('Yeahh! Anh đã bắt được 15 chiếc đầu của em rồi! 💕');
+                            goToPage('page3');
+                        }, 200);
+                        return;
+                    }
+                } else if(h.y > canvas.height) {
+                    heads.splice(i, 1);
+                }
+            }
+
+            if(score < 15) {
+                requestAnimationFrame(updateGame);
+            }
+        }
+
+        /* JOURNEY MAP (DIPERLAMBAT JADI 6 DETIK SUPAYA LEBIH SANTAI) */
+        function startJourney() {
+            const runner = document.getElementById('heartRunner');
+            runner.style.left = 'calc(100% - 50px)';
+            setTimeout(() => {
+                document.getElementById('nextToTimer').style.display = 'inline-block';
+            }, 6000); // Tombol lanjut muncul setelah 6 detik
+        }
+
+        /* LOVE TIMER */
+        function startTimer() {
+            const startDate = new Date('2026-07-21T00:00:00');
+            setInterval(() => {
+                const now = new Date();
+                const diff = now - startDate;
+                if(diff > 0) {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const mins = Math.floor((diff / 1000 / 60) % 60);
+                    const secs = Math.floor((diff / 1000) % 60);
+
+                    document.getElementById('t-days').innerText = days;
+                    document.getElementById('t-hours').innerText = hours;
+                    document.getElementById('t-mins').innerText = mins;
+                    document.getElementById('t-secs').innerText = secs;
+                }
+            }, 1000);
+        }
+
+        /* RUNAWAY BUTTON */
+        function moveNo() {
+            const btn = document.getElementById('btnNo');
+            const x = Math.random() * 160 - 80;
+            const y = Math.random() * 80 - 40;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        /* AUDIO RIDDLE */
+        function checkAudioAnswer() {
+            const input = document.getElementById('answerInput').value.trim().toLowerCase();
+            const correctAnswer = CONFIG.QUIZ_ANSWER.trim().toLowerCase();
+
+            if(input === correctAnswer) {
+                document.getElementById('audioPlayerBox').style.display = 'block';
+            } else if(input === "") {
+                alert('Hãy nhập câu trả lời của anh trước nhé!');
+            } else {
+                alert('Saiii rồi!! Nghĩ kỹ lại xem, người em yêu nhất là ai nào? 😜');
+            }
+        }
+
+        /* TYPING EFFECT SURAT (DIPERLAMBAT & SUARA DIATUR MULUS TANPA MENDET) */
+        const fullLetterText = `Chúc Mừng Ngày Bạn Trai Nhé Anh Yêu ❤️\n\nChúc mừng ngày bạn trai anh yêu của em, em yêu và thương anh nhiều lắm. Em xin lỗi vì trong suốt thời gian yêu nhau, em luôn có những lúc trẻ con như giận dỗi, khóc lóc,... với anh, và đôi khi lúc em giận anh em lại hay biến mất tăm. Nhưng em cũng muốn cảm ơn anh, vì có anh, lần đầu tiên em cảm thấy được một người yêu thương nhiều đến thế, em thật sự rất biết ơn anh.\n\nAnh yêu à, em chỉ muốn nói rằng dù vấn đề của anh có nặng nề đến đâu, dù con đường Chúa dành cho anh có khó khăn đến mấy, đừng bao giờ nghĩ đến chuyện bỏ cuộc nhé. Em ở đây và sẽ luôn ở bên anh, dù khoảng cách của chúng ta có xa đến đâu.\n\nCảm ơn anh yêu của em đã cố gắng đến tận bây giờ và chọn em trở thành một phần trong những ngày tháng của anh. Dù chúng ta mới được 2 tháng và chưa từng gặp nhau, anh đã là nơi bình yên nhất của em. Hãy cùng nhau mãi như thế nhé anh yêu, I love you more than words can say! ❤️`;
+
+        function openLetterWithTyping() {
+            document.getElementById('envelope').style.display = 'none';
+            const letterBox = document.getElementById('letterContent');
+            letterBox.style.display = 'block';
+            
+            const typeSnd = document.getElementById('typingSound');
+
+            let index = 0;
+            function typeChar() {
+                if(index < fullLetterText.length) {
+                    letterBox.innerHTML += fullLetterText.charAt(index);
+                    index++;
+                    letterBox.scrollTop = letterBox.scrollHeight;
+
+                    // Efek suara ketikan mulus tanpa patah-patah
+                    if(fullLetterText.charAt(index - 1) !== ' ' && fullLetterText.charAt(index - 1) !== '\n') {
+                        typeSnd.currentTime = 0;
+                        typeSnd.play().catch(()=>{});
+                    }
+
+                    setTimeout(typeChar, 65); /* Diperlambat dari 35ms ke 65ms per huruf */
+                } else {
+                    document.getElementById('btnToPage8').style.display = 'inline-block';
+                }
+            }
+            typeChar();
+        }
+
+        /* POLAROID (tên file ảnh lấy từ CONFIG.FILE_PHOTO1/2/3) */
+        const polaroids = {
+            1: { caption: 'anh đẹp trai của em', img: CONFIG.FILE_PHOTO1 },
+            2: { caption: 'ảnh dễ thương anh gửi cho em', img: CONFIG.FILE_PHOTO2 },
+            3: { caption: 'cậu bé ngày nào giờ đã lớn thành người đàn ông tuyệt vời', img: CONFIG.FILE_PHOTO3 }
+        };
+
+        function openPolaroid(num) {
+            const card = document.getElementById('polaroidCard');
+            const frame = document.getElementById('polaroidFrame');
+            const caption = document.getElementById('polaroidCaption');
+            const item = polaroids[num];
+
+            frame.innerHTML = `<img src="${item.img}" onerror="this.onerror=null; this.parentNode.innerHTML='<span style=\\'font-size: 3rem;\\'>💖</span><span style=\\'font-size: 0.85rem; color: #888; margin-top: 5px;\\'>Sắp tới mình sẽ cùng tạo thật nhiều kỉ niệm nhé</span>';" alt="Ảnh">`;
+            caption.innerText = item.caption;
+            card.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
