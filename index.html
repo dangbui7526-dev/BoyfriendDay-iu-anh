@@ -779,16 +779,28 @@
             }
         }
 
-        /* VOICE NOTE DENGAN SISTEM DUCKING VOLUME (LAGU MENGECIL OTOMATIS SAAT VOICE BISA DIPUTER) */
+        /* VOICE NOTE: KHI PHÁT VOICE THÌ TẮT NHẠC NỀN, VOICE XONG THÌ NHẠC NỀN PHÁT LẠI */
+        let musicWasPlaying = false;
+
+        function setMusicUI(isPlaying) {
+            const disc = document.getElementById('vinylDisc');
+            const eq = document.getElementById('equalizer');
+            const btn = document.getElementById('toggleMusicBtn');
+            if (isPlaying) {
+                disc.classList.add('playing');
+                eq.classList.add('playing');
+                btn.innerHTML = "⏸️ Tạm Dừng Bài Hát";
+            } else {
+                disc.classList.remove('playing');
+                eq.classList.remove('playing');
+                btn.innerHTML = "▶️ Phát Bài Hát Lãng Mạn";
+            }
+        }
+
         function toggleVoiceNote() {
             const vAudio = document.getElementById('myVoice');
-            const bgMusic = document.getElementById('bgMusic');
 
             if(vAudio.paused) {
-                // Kecilkan lagu utama agar suara Voice Note kamu sangat jelas
-                if(!bgMusic.paused) {
-                    bgMusic.volume = 0.15;
-                }
                 vAudio.play();
             } else {
                 vAudio.pause();
@@ -797,14 +809,26 @@
 
         function startVoiceAnim() {
             document.getElementById('voiceCard').classList.add('playing');
+
+            // Tắt nhạc nền để chỉ nghe giọng nói
+            const bgMusic = document.getElementById('bgMusic');
+            if(!bgMusic.paused) {
+                musicWasPlaying = true;
+                bgMusic.pause();
+                setMusicUI(false);
+            }
         }
 
         function stopVoiceAnim() {
             document.getElementById('voiceCard').classList.remove('playing');
-            // Kembalikan volume lagu utama jadi kencang kembali
-            const bgMusic = document.getElementById('bgMusic');
-            if(!bgMusic.paused) {
+
+            // Voice kết thúc (hoặc tạm dừng) thì nhạc nền phát lại
+            if(musicWasPlaying) {
+                musicWasPlaying = false;
+                const bgMusic = document.getElementById('bgMusic');
                 bgMusic.volume = 1.0;
+                bgMusic.play().catch(()=>{});
+                setMusicUI(true);
             }
         }
 
